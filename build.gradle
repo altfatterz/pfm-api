@@ -1,0 +1,29 @@
+apply plugin: 'java'
+apply plugin: 'spring-boot'
+
+version = '1.0'
+
+buildscript {
+    repositories {
+        mavenCentral()
+        maven { url "http://repo.spring.io/libs-snapshot" }
+    }
+    dependencies {
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:1.0.1.RELEASE")
+    }
+}
+
+repositories {
+    mavenCentral()
+    maven { url "http://repo.spring.io/libs-snapshot" }
+}
+
+dependencies {
+    compile("org.springframework.boot:spring-boot-starter-data-jpa")
+    compile("org.springframework.boot:spring-boot-starter-web")
+    compile("com.h2database:h2")
+}
+
+task wrapper(type: Wrapper) {
+    gradleVersion = '1.11'
+}
