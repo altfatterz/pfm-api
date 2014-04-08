@@ -1,13 +1,14 @@
 package com.backbase.pfm.goal;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.springframework.data.jpa.domain.AbstractPersistable;
 
 import javax.persistence.Entity;
 import javax.persistence.Table;
-import java.math.BigDecimal;
 
 @Entity
 @Table(name = "goals")
+@JsonIgnoreProperties("new")
 public class Goal extends AbstractPersistable<Long> {
 
     private String name;
