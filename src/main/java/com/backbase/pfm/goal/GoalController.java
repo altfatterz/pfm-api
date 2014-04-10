@@ -1,6 +1,8 @@
 package com.backbase.pfm.goal;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -22,8 +24,12 @@ public class GoalController {
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
-    public Goal getGoal(@PathVariable Long id) {
-        return goalRepository.findOne(id);
+    public ResponseEntity<Goal> getGoal(@PathVariable Long id) {
+        Goal goal = goalRepository.findOne(id);
+        if (goal == null) {
+            return new ResponseEntity<Goal>(HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<Goal>(goal, HttpStatus.OK);
     }
 
 
