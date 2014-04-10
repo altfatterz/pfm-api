@@ -1,6 +1,7 @@
 package com.backbase.pfm.goal;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -27,29 +28,37 @@ public class GoalController {
     public ResponseEntity<Goal> getGoal(@PathVariable Long id) {
         Goal goal = goalRepository.findOne(id);
         if (goal == null) {
-            return new ResponseEntity<Goal>(HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        return new ResponseEntity<Goal>(goal, HttpStatus.OK);
+        return new ResponseEntity<>(goal, HttpStatus.OK);
     }
 
 
     // curl -H "Content-Type:application/json" -X POST localhost:8080/v1/pfm/customers -d '{"name":"New Car","amount":1000}'
     @RequestMapping(method = RequestMethod.POST)
-    public void createGoal(@RequestBody Goal goal) {
-        goalRepository.save(goal);
+    public ResponseEntity<CreateGoalResponse> createGoal(@RequestBody Goal goal) {
+        Goal savedGoal = goalRepository.save(goal);
+        CreateGoalResponse response = new CreateGoalResponse(savedGoal.getId());
+        return new ResponseEntity<>(response, HttpStatus.CREATED);
+
     }
 
     // TODO: does not work yet
     // curl -H "Content-Type:application/json" -X PUT localhost:8080/v1/pfm/customers/4 -d '{"name":"Vacation","amount":500}'
     @RequestMapping(value = "/{id}", method = RequestMethod.PUT)
-    public void updateGoal(@RequestBody Goal goal) {
-        System.out.println(goal.getName() + " : " + goal.getAmount());
+    public void updateGoal(@PathVariable Long id, @RequestBody Goal goal) {
+        System.out.println(goal.getName() + " : " + goal.getAmount() + " : " + goal.isNew());
         goalRepository.save(goal);
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
-    public void deleteGoal(@PathVariable Long id) {
-        goalRepository.delete(id);
+    public ResponseEntity<Goal> deleteGoal(@PathVariable Long id) {
+        try {
+            goalRepository.delete(id);
+        } catch (EmptyResultDataAccessException e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
 
