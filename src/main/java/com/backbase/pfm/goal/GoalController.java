@@ -4,12 +4,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindException;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
-@RequestMapping("/v1/pfm/customers")
+@RequestMapping("/v1/pfm/goals")
 public class GoalController {
 
     private GoalRepository goalRepository;
@@ -33,14 +37,12 @@ public class GoalController {
         return new ResponseEntity<>(goal, HttpStatus.OK);
     }
 
-
     // curl -H "Content-Type:application/json" -X POST localhost:8080/v1/pfm/customers -d '{"name":"New Car","amount":1000}'
     @RequestMapping(method = RequestMethod.POST)
-    public ResponseEntity<CreateGoalResponse> createGoal(@RequestBody Goal goal) {
+    public ResponseEntity<CreateGoalResponse> createGoal(@Valid @RequestBody Goal goal) {
         Goal savedGoal = goalRepository.save(goal);
         CreateGoalResponse response = new CreateGoalResponse(savedGoal.getId());
         return new ResponseEntity<>(response, HttpStatus.CREATED);
-
     }
 
     // TODO: does not work yet
