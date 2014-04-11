@@ -1,10 +1,9 @@
 package com.backbase.pfm.goal;
 
-public class ErrorResponse {
+public class Error {
 
     private String code;
     private String message;
-    private String description;
 
     public String getCode() {
         return code;
@@ -20,13 +19,5 @@ public class ErrorResponse {
 
     public void setMessage(String message) {
         this.message = message;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
     }
 }

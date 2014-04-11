@@ -1,12 +1,10 @@
 package com.backbase.pfm.goal;
 
+import org.springframework.beans.TypeMismatchException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BindException;
-import org.springframework.validation.BindingResult;
-import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -36,6 +34,15 @@ public class GoalController {
         }
         return new ResponseEntity<>(goal, HttpStatus.OK);
     }
+
+    @ExceptionHandler(TypeMismatchException.class)
+    public ResponseEntity<Error> handleTypeMismatchException(TypeMismatchException e) {
+        Error error = new Error();
+        error.setCode(HttpStatus.BAD_REQUEST.toString());
+        error.setMessage(e.getMessage());
+        return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
+    }
+
 
     // curl -H "Content-Type:application/json" -X POST localhost:8080/v1/pfm/customers -d '{"name":"New Car","amount":1000}'
     @RequestMapping(method = RequestMethod.POST)
