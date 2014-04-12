@@ -2,14 +2,10 @@ package com.backbase.pfm.goal;
 
 public class GoalNotFoundException extends Exception {
 
-    private String message;
+    private static final String MESSAGE_FORMAT = "Goal '%d' does not exist";
 
-    public GoalNotFoundException(String message) {
-        this.message = message;
-    }
-
-    public String getMessage() {
-        return message;
+    public GoalNotFoundException(Long goalId) {
+        super(String.format(MESSAGE_FORMAT, goalId));
     }
 
 }

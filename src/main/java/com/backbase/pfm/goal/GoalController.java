@@ -3,6 +3,7 @@ package com.backbase.pfm.goal;
 import org.springframework.beans.TypeMismatchException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.net.URI;
 import java.util.List;
 
 @RestController
@@ -33,7 +35,7 @@ public class GoalController {
     public ResponseEntity<Goal> getGoal(@PathVariable Long id) throws GoalNotFoundException {
         Goal goal = goalRepository.findOne(id);
         if (goal == null) {
-            throw new GoalNotFoundException("Goal not found with id " + id);
+            throw new GoalNotFoundException(id);
         }
         return new ResponseEntity<>(goal, HttpStatus.OK);
     }
@@ -55,17 +57,18 @@ public class GoalController {
     }
 
     /**
-     * CREATE GOAL *
+     * CREATE GOAL
      */
     // curl -i -H "Content-Type:application/json" -X POST localhost:8080/v1/pfm/goals -d '{"name":"New Car","amount":1000}'
     // curl -i -H "Content-Type:application/json" -X POST localhost:8080/v1/pfm/goals -d '{"name":"New Car","amount":-1000}'
     // curl -i -H "Content-Type:application/json" -X POST localhost:8080/v1/pfm/goals -d '{"name":"","amount":1000}'
     // curl -i -H "Content-Type:application/json" -X POST localhost:8080/v1/pfm/goals -d '{"amount":1000}'
     @RequestMapping(method = RequestMethod.POST)
-    public ResponseEntity<CreateGoalResponse> createGoal(@Valid @RequestBody Goal goal) {
-        Goal savedGoal = goalRepository.save(goal);
-        CreateGoalResponse response = new CreateGoalResponse(savedGoal.getId());
-        return new ResponseEntity<>(response, HttpStatus.CREATED);
+    public ResponseEntity<Void> createGoal(@Valid @RequestBody Goal goal) {
+        Goal createdGoal = goalRepository.save(goal);
+        HttpHeaders headers = new HttpHeaders();
+        headers.setLocation(URI.create("http://localhost:8080/v1/pfm/goals/" + createdGoal.getId()));
+        return new ResponseEntity<>(headers, HttpStatus.CREATED);
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
@@ -88,7 +91,6 @@ public class GoalController {
        return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
     }
 
-
     // TODO: does not work yet
     // curl -H "Content-Type:application/json" -X PUT localhost:8080/v1/pfm/goals/4 -d '{"name":"Vacation","amount":500}'
     @RequestMapping(value = "/{id}", method = RequestMethod.PUT)
@@ -98,13 +100,13 @@ public class GoalController {
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
-    public ResponseEntity<Goal> deleteGoal(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteGoal(@PathVariable Long id) throws GoalNotFoundException {
         try {
             goalRepository.delete(id);
         } catch (EmptyResultDataAccessException e) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            throw new GoalNotFoundException(id);
         }
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
 
