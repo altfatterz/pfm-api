@@ -1,11 +1,15 @@
 package com.backbase.pfm.goal;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import org.hibernate.validator.constraints.NotEmpty;
 import org.springframework.data.jpa.domain.AbstractPersistable;
 
 import javax.persistence.Entity;
 import javax.persistence.Table;
+import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.NotNull;
+import java.math.BigDecimal;
 
 @Entity
 @Table(name = "goals")
@@ -13,9 +17,11 @@ import javax.validation.constraints.NotNull;
 public class Goal extends AbstractPersistable<Long> {
 
     @NotNull
+    @NotEmpty
     private String name;
 
-    private double amount;
+    @DecimalMin("0")
+    private BigDecimal amount = new BigDecimal(0);
 
     public String getName() {
         return name;
@@ -25,11 +31,11 @@ public class Goal extends AbstractPersistable<Long> {
         this.name = name;
     }
 
-    public double getAmount() {
+    public BigDecimal getAmount() {
         return amount;
     }
 
-    public void setAmount(double amount) {
+    public void setAmount(BigDecimal amount) {
         this.amount = amount;
     }
 }

@@ -5,6 +5,7 @@ import com.backbase.pfm.goal.GoalRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.transaction.Transactional;
+import java.math.BigDecimal;
 
 public class DataLoader {
 
@@ -20,12 +21,12 @@ public class DataLoader {
 
         goal = new Goal();
         goal.setName("Groceries");
-        goal.setAmount(150);
+        goal.setAmount(new BigDecimal(150));
         goalRepository.save(goal);
 
         goal = new Goal();
         goal.setName("Monthly Bills");
-        goal.setAmount(550);
+        goal.setAmount(new BigDecimal(550));
         goalRepository.save(goal);
 
     }
