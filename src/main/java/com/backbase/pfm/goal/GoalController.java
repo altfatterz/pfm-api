@@ -27,10 +27,10 @@ public class GoalController {
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
-    public ResponseEntity<Goal> getGoal(@PathVariable Long id) {
+    public ResponseEntity<Goal> getGoal(@PathVariable Long id) throws GoalNotFoundException {
         Goal goal = goalRepository.findOne(id);
         if (goal == null) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            throw new GoalNotFoundException("Goal not found with id " + id);
         }
         return new ResponseEntity<>(goal, HttpStatus.OK);
     }
@@ -41,6 +41,14 @@ public class GoalController {
         error.setCode(HttpStatus.BAD_REQUEST.toString());
         error.setMessage(e.getMessage());
         return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(GoalNotFoundException.class)
+    public ResponseEntity<Error> handleGoalNotFoundException(GoalNotFoundException e) {
+        Error error = new Error();
+        error.setCode(HttpStatus.NOT_FOUND.toString());
+        error.setMessage(e.getMessage());
+        return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
     }
 
 
