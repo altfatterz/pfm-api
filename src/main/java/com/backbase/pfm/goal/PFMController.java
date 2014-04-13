@@ -1,6 +1,7 @@
 package com.backbase.pfm.goal;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.Resource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -11,12 +12,13 @@ import java.util.List;
 @RequestMapping("/v1/pfm/accounts")
 public class PFMController {
 
-
     private AccountRepository accountRepository;
+    private AccountResourceAssembler accountResourceAssembler;
 
     @Autowired
-    public PFMController(AccountRepository accountRepository) {
+    public PFMController(AccountRepository accountRepository, AccountResourceAssembler accountResourceAssembler) {
         this.accountRepository = accountRepository;
+        this.accountResourceAssembler = accountResourceAssembler;
     }
 
     @RequestMapping(method = RequestMethod.GET)
@@ -25,12 +27,13 @@ public class PFMController {
     }
 
     @RequestMapping(value = "/{accountId}", method = RequestMethod.GET)
-    public ResponseEntity<Account> getAccount(@PathVariable Long accountId) throws AccountDoesNotExistException {
+    public ResponseEntity<Resource<Account>> getAccount(@PathVariable Long accountId) throws AccountDoesNotExistException {
         final Account account = accountRepository.findOne(accountId);
         if (account == null) {
             throw new AccountDoesNotExistException(accountId);
         }
-        return new ResponseEntity<>(account, HttpStatus.OK);
+        Resource<Account> resource = accountResourceAssembler.toResource(account);
+        return new ResponseEntity<>(resource, HttpStatus.OK);
     }
 
     @RequestMapping(value = "/{accountId}/goals", method = RequestMethod.GET)

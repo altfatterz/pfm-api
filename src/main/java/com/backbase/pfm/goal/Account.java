@@ -1,5 +1,6 @@
 package com.backbase.pfm.goal;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.springframework.data.jpa.domain.AbstractPersistable;
 
@@ -50,6 +51,7 @@ public class Account extends AbstractPersistable<Long> {
         return safeToSpend;
     }
 
+    @JsonIgnore
     public List<Goal> getGoals() {
         return goals;
     }
