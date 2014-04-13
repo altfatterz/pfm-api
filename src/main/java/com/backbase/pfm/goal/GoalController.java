@@ -1,5 +1,6 @@
 package com.backbase.pfm.goal;
 
+import com.fasterxml.jackson.core.JsonParseException;
 import org.springframework.beans.TypeMismatchException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -71,6 +72,22 @@ public class GoalController {
         headers.setLocation(URI.create("http://localhost:8080/v1/pfm/goals/" + createdGoal.getId()));
         return new ResponseEntity<>(headers, HttpStatus.CREATED);
     }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<Error> handleTypeMismatchException(Exception e) {
+        Error error = new Error();
+        error.setCode(HttpStatus.BAD_REQUEST.toString());
+        Throwable cause = e.getCause();
+        if (cause != null) {
+            if (cause instanceof JsonParseException) {
+                error.setMessage("invalid JSON payload");
+            }
+        } else {
+            error.setMessage("bad request");
+        }
+        return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
+    }
+
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<Error> handleError(MethodArgumentNotValidException e) {
