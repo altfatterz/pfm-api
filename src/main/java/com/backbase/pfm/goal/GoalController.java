@@ -59,6 +59,7 @@ public class GoalController {
     /**
      * CREATE GOAL
      */
+    // by default curl sends request with "application/x-www-form-urlencoded" Content-Type
     // curl -i -H "Content-Type:application/json" -X POST localhost:8080/v1/pfm/goals -d '{"name":"New Car","amount":1000}'
     // curl -i -H "Content-Type:application/json" -X POST localhost:8080/v1/pfm/goals -d '{"name":"New Car","amount":-1000}'
     // curl -i -H "Content-Type:application/json" -X POST localhost:8080/v1/pfm/goals -d '{"name":"","amount":1000}'
@@ -99,6 +100,8 @@ public class GoalController {
         goalRepository.save(goal);
     }
 
+    // curl -i -v -X DELETE localhost:8080/v1/pfm/goals/5  -> error
+    // curl -i -v -X DELETE localhost:8080/v1/pfm/goals/1  -> 200 OK
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
     public ResponseEntity<Void> deleteGoal(@PathVariable Long id) throws GoalNotFoundException {
         try {
