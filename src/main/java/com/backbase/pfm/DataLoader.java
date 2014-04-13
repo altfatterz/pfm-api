@@ -1,7 +1,6 @@
 package com.backbase.pfm;
 
-import com.backbase.pfm.goal.Goal;
-import com.backbase.pfm.goal.GoalRepository;
+import com.backbase.pfm.goal.*;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.transaction.Transactional;
@@ -12,22 +11,43 @@ public class DataLoader {
     @Autowired
     private GoalRepository goalRepository;
 
+    @Autowired
+    private AccountRepository accountRepository;
+
     @Transactional
     public void loadData() {
 
+        Account account = new Account();
+        account.setName("Family savings account");
+        account.setType(AccountType.SAVINGS);
+        account.setBalance(new BigDecimal(20000));
+
         Goal goal = new Goal();
         goal.setName("Vacation");
-        goalRepository.save(goal);
+        account.addGoal(goal);
+
+        goal = new Goal();
+        goal.setName("New house");
+        account.addGoal(goal);
+
+        accountRepository.save(account);
+
+        account = new Account();
+        account.setName("Checking account");
+        account.setType(AccountType.CHECKING);
+        account.setBalance(new BigDecimal(3000));
 
         goal = new Goal();
         goal.setName("Groceries");
         goal.setAmount(new BigDecimal(150));
-        goalRepository.save(goal);
+        account.addGoal(goal);
 
         goal = new Goal();
         goal.setName("Monthly Bills");
         goal.setAmount(new BigDecimal(550));
-        goalRepository.save(goal);
+        account.addGoal(goal);
+
+        accountRepository.save(account);
 
     }
 
