@@ -45,7 +45,7 @@ public class GoalController {
     public ResponseEntity<Error> handleTypeMismatchException(TypeMismatchException e) {
         Error error = new Error();
         error.setCode(HttpStatus.BAD_REQUEST.toString());
-        error.setMessage(" ID should be numeric. Could not convert \"" + e.getValue() + "\" into a numeric.");
+        error.setMessage("Id should be numeric. Could not convert \"" + e.getValue() + "\" into a numeric.");
         return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
     }
 
@@ -121,6 +121,27 @@ public class GoalController {
         goalRepository.save(goalToUpdate);
         return new ResponseEntity<>(HttpStatus.OK);
     }
+
+    /**
+     * Bulk update
+     */
+    // curl -H "Content-Type:application/json" -X PUT localhost:8080/v1/pfm/goals -d '[{"id":1, "name":"Vacation","amount":500}]'
+    // curl -H "Content-Type:application/json" -X PUT localhost:8080/v1/pfm/goals -d '[{"id":1, "name":"Vacation","amount":500}, {"id":2, "name":"hello","amount":12}]'
+    @RequestMapping(method = RequestMethod.PUT)
+    public ResponseEntity<Void> updateGoals(@RequestBody List<Goal> goals) throws GoalNotFoundException {
+        for (Goal goal : goals) {
+            if (goal.getId() != null) {
+                Goal goalToUpdate = goalRepository.findOne(goal.getId());
+                if (goalToUpdate != null) {
+                    goalToUpdate.setName(goal.getName());
+                    goalToUpdate.setAmount(goal.getAmount());
+                    goalRepository.save(goalToUpdate);
+                }
+            }
+        }
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
 
     // curl -i -v -X DELETE localhost:8080/v1/pfm/goals/5  -> error
     // curl -i -v -X DELETE localhost:8080/v1/pfm/goals/1  -> 200 OK
