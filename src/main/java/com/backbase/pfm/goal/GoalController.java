@@ -109,12 +109,17 @@ public class GoalController {
        return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
     }
 
-    // TODO: does not work yet
     // curl -H "Content-Type:application/json" -X PUT localhost:8080/v1/pfm/goals/4 -d '{"name":"Vacation","amount":500}'
     @RequestMapping(value = "/{id}", method = RequestMethod.PUT)
-    public void updateGoal(@PathVariable Long id, @RequestBody Goal goal) {
-        System.out.println(goal.getName() + " : " + goal.getAmount() + " : " + goal.isNew());
-        goalRepository.save(goal);
+    public ResponseEntity<Void> updateGoal(@PathVariable Long id, @RequestBody Goal goal) throws GoalNotFoundException {
+        Goal goalToUpdate = goalRepository.findOne(id);
+        if (goalToUpdate == null) {
+            throw new GoalNotFoundException(id);
+        }
+        goalToUpdate.setName(goal.getName());
+        goalToUpdate.setAmount(goal.getAmount());
+        goalRepository.save(goalToUpdate);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     // curl -i -v -X DELETE localhost:8080/v1/pfm/goals/5  -> error
