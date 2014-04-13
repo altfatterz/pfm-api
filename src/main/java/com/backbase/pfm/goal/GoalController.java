@@ -129,5 +129,14 @@ public class GoalController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
+    /**
+     * Bulk delete
+     */
+    // curl -i -v -X DELETE localhost:8080/v1/pfm/goals
+    @RequestMapping(method = RequestMethod.DELETE)
+    public ResponseEntity<Void> deleteGoals() throws GoalNotFoundException {
+        goalRepository.deleteAll();
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
 
 }
