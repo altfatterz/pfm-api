@@ -35,3 +35,7 @@ task wrapper(type: Wrapper) {
 }
 
 defaultTasks 'clean', 'build'
+
+heroku {
+    appName = 'pfm-api'
+}
