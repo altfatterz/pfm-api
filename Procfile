@@ -1,0 +1,1 @@
+web: java -jar build/libs/pfm-api-1.0.jar

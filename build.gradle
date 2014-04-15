@@ -1,21 +1,24 @@
 apply plugin: 'java'
 apply plugin: 'spring-boot'
+apply plugin: 'heroku'
 
 version = '1.0'
 
 buildscript {
     repositories {
         mavenCentral()
-        maven { url "http://repo.spring.io/libs-snapshot" }
+        maven { url 'http://repo.spring.io/libs-snapshot' }
+        maven { url 'http://dl.bintray.com/vermeulen-mp/gradle-plugins' }
     }
     dependencies {
-        classpath("org.springframework.boot:spring-boot-gradle-plugin:1.0.1.RELEASE")
+        classpath('org.springframework.boot:spring-boot-gradle-plugin:1.0.1.RELEASE')
+        classpath('com.wiredforcode:gradle-heroku-plugin:1.0.0')
     }
 }
 
 repositories {
     mavenCentral()
-    maven { url "http://repo.spring.io/libs-snapshot" }
+    maven { url 'http://repo.spring.io/libs-snapshot' }
 }
 
 dependencies {
@@ -30,3 +33,5 @@ dependencies {
 task wrapper(type: Wrapper) {
     gradleVersion = '1.11'
 }
+
+defaultTasks 'clean', 'build'
