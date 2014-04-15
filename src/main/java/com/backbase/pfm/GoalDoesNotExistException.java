@@ -1,4 +1,4 @@
-package com.backbase.pfm.goal;
+package com.backbase.pfm;
 
 public class GoalDoesNotExistException extends Exception {
 

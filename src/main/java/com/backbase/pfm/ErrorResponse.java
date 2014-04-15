@@ -1,6 +1,6 @@
-package com.backbase.pfm.goal;
+package com.backbase.pfm;
 
-public class Error {
+public class ErrorResponse {
 
     private String code;
     private String message;

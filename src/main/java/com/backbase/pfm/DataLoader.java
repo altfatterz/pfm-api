@@ -1,6 +1,5 @@
 package com.backbase.pfm;
 
-import com.backbase.pfm.goal.*;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.transaction.Transactional;

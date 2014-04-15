@@ -1,4 +1,4 @@
-package com.backbase.pfm.goal;
+package com.backbase.pfm;
 
 import com.fasterxml.jackson.core.JsonParseException;
 import org.springframework.beans.TypeMismatchException;
@@ -13,6 +13,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.lang.*;
 import java.net.URI;
 import java.util.List;
 
@@ -42,19 +43,19 @@ public class GoalController {
     }
 
     @ExceptionHandler(TypeMismatchException.class)
-    public ResponseEntity<Error> handleTypeMismatchException(TypeMismatchException e) {
-        Error error = new Error();
-        error.setCode(HttpStatus.BAD_REQUEST.toString());
-        error.setMessage("Id should be numeric. Could not convert \"" + e.getValue() + "\" into a numeric.");
-        return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
+    public ResponseEntity<ErrorResponse> handleTypeMismatchException(TypeMismatchException e) {
+        ErrorResponse errorResponse = new ErrorResponse();
+        errorResponse.setCode(HttpStatus.BAD_REQUEST.toString());
+        errorResponse.setMessage("Id should be numeric. Could not convert \"" + e.getValue() + "\" into a numeric.");
+        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(GoalNotFoundException.class)
-    public ResponseEntity<Error> handleGoalNotFoundException(GoalNotFoundException e) {
-        Error error = new Error();
-        error.setCode(HttpStatus.NOT_FOUND.toString());
-        error.setMessage(e.getMessage());
-        return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
+    public ResponseEntity<ErrorResponse> handleGoalNotFoundException(GoalNotFoundException e) {
+        ErrorResponse errorResponse = new ErrorResponse();
+        errorResponse.setCode(HttpStatus.NOT_FOUND.toString());
+        errorResponse.setMessage(e.getMessage());
+        return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
     }
 
     /**
@@ -74,25 +75,25 @@ public class GoalController {
     }
 
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<Error> handleTypeMismatchException(Exception e) {
-        Error error = new Error();
-        error.setCode(HttpStatus.BAD_REQUEST.toString());
+    public ResponseEntity<ErrorResponse> handleTypeMismatchException(Exception e) {
+        ErrorResponse errorResponse = new ErrorResponse();
+        errorResponse.setCode(HttpStatus.BAD_REQUEST.toString());
         Throwable cause = e.getCause();
         if (cause != null) {
             if (cause instanceof JsonParseException) {
-                error.setMessage("invalid JSON payload");
+                errorResponse.setMessage("invalid JSON payload");
             }
         } else {
-            error.setMessage("bad request");
+            errorResponse.setMessage("bad request");
         }
-        return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }
 
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<Error> handleError(MethodArgumentNotValidException e) {
-        Error error = new Error();
-        error.setCode(HttpStatus.BAD_REQUEST.toString());
+    public ResponseEntity<ErrorResponse> handleError(MethodArgumentNotValidException e) {
+        ErrorResponse errorResponse = new ErrorResponse();
+        errorResponse.setCode(HttpStatus.BAD_REQUEST.toString());
         BindingResult bindingResult = e.getBindingResult();
         if (bindingResult != null) {
             FieldError fieldError = bindingResult.getFieldError();
@@ -103,10 +104,10 @@ public class GoalController {
                 sb.append(fieldError.getRejectedValue());
                 sb.append("] value is rejected, ");
                 sb.append(fieldError.getDefaultMessage());
-                error.setMessage(sb.toString());
+                errorResponse.setMessage(sb.toString());
             }
         }
-       return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
+       return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }
 
     // curl -H "Content-Type:application/json" -X PUT localhost:8080/v1/pfm/goals/4 -d '{"name":"Vacation","amount":500}'

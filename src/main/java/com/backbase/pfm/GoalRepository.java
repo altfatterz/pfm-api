@@ -1,4 +1,4 @@
-package com.backbase.pfm.goal;
+package com.backbase.pfm;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 

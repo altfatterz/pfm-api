@@ -1,4 +1,4 @@
-package com.backbase.pfm.goal;
+package com.backbase.pfm;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.Resource;
@@ -6,6 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.lang.*;
 import java.util.List;
 
 @RestController
@@ -61,11 +62,11 @@ public class PFMController {
 
 
     @ExceptionHandler({AccountDoesNotExistException.class, GoalDoesNotExistException.class})
-    public ResponseEntity<Error> handleNotFounds(Exception e) {
-        Error error = new Error();
-        error.setCode(HttpStatus.NOT_FOUND.toString());
-        error.setMessage(e.getMessage());
-        return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
+    public ResponseEntity<ErrorResponse> handleNotFounds(Exception e) {
+        ErrorResponse errorResponse = new ErrorResponse();
+        errorResponse.setCode(HttpStatus.NOT_FOUND.toString());
+        errorResponse.setMessage(e.getMessage());
+        return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
     }
 
 

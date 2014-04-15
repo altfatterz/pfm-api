@@ -1,4 +1,4 @@
-package com.backbase.pfm.goal;
+package com.backbase.pfm;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
