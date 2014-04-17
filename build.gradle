@@ -28,6 +28,8 @@ dependencies {
     compile('org.hibernate:hibernate-validator:4.3.1.Final')
     compile('org.springframework.hateoas:spring-hateoas:0.9.0.RELEASE')
 
+    compile('com.mangofactory:swagger-springmvc:0.8.2')
+
 }
 
 task wrapper(type: Wrapper) {
@@ -37,5 +39,6 @@ task wrapper(type: Wrapper) {
 defaultTasks 'clean', 'build'
 
 heroku {
+    apiKey = '5334f714-2162-4a60-8843-14352d79d41b'
     appName = 'pfm-api'
 }

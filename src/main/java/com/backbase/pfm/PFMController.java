@@ -1,5 +1,7 @@
 package com.backbase.pfm;
 
+import com.wordnik.swagger.annotations.Api;
+import com.wordnik.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.Resource;
 import org.springframework.http.HttpStatus;
@@ -10,6 +12,7 @@ import java.lang.*;
 import java.util.List;
 
 @RestController
+@Api(value = "pfm", description = "PFM API")
 @RequestMapping("/v1/pfm/accounts")
 public class PFMController {
 
@@ -22,11 +25,13 @@ public class PFMController {
         this.accountResourceAssembler = accountResourceAssembler;
     }
 
+    @ApiOperation(value = "Get accounts", notes = "Returns accounts")
     @RequestMapping(method = RequestMethod.GET)
     public List<Account> getAccounts() {
         return accountRepository.findAll();
     }
 
+    @ApiOperation(value = "Get account", notes = "Returns an account by id")
     @RequestMapping(value = "/{accountId}", method = RequestMethod.GET)
     public ResponseEntity<Resource<Account>> getAccount(@PathVariable Long accountId) throws AccountDoesNotExistException {
         final Account account = accountRepository.findOne(accountId);
@@ -37,6 +42,7 @@ public class PFMController {
         return new ResponseEntity<>(resource, HttpStatus.OK);
     }
 
+    @ApiOperation(value = "Get goals", notes = "Get goals of an account")
     @RequestMapping(value = "/{accountId}/goals", method = RequestMethod.GET)
     public ResponseEntity<List<Goal>> getAccountGoals(@PathVariable Long accountId) throws AccountDoesNotExistException {
         final Account account = accountRepository.findOne(accountId);
@@ -46,6 +52,7 @@ public class PFMController {
         return new ResponseEntity<>(account.getGoals(), HttpStatus.OK);
     }
 
+    @ApiOperation(value = "Get goal", notes = "Get a goal of an account")
     @RequestMapping(value = "/{accountId}/goals/{goalId}", method = RequestMethod.GET)
     public ResponseEntity<Goal> getAccountGoal(@PathVariable Long accountId, @PathVariable Long goalId)
             throws AccountDoesNotExistException, GoalDoesNotExistException {
