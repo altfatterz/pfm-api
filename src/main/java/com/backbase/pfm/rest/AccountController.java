@@ -45,7 +45,7 @@ public class AccountController {
         return new ResponseEntity<>(resource, HttpStatus.OK);
     }
 
-    // TODO check why swagger has problems with using PUT
+    // TODO check why swagger has problems with using PATCH
     @ApiOperation(value = "Update an account", notes = "Update an account")
     @RequestMapping(value = "/{accountId}", method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Resource<Account>> updateAccount(@PathVariable String accountId, @RequestBody Account account) throws AccountDoesNotExistException {
