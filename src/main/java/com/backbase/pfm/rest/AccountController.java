@@ -1,5 +1,6 @@
 package com.backbase.pfm.rest;
 
+import com.fasterxml.jackson.core.JsonParseException;
 import com.wordnik.swagger.annotations.Api;
 import com.wordnik.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +10,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.lang.*;
 import java.util.List;
 
@@ -27,13 +29,13 @@ public class AccountController {
     }
 
     @ApiOperation(value = "Get accounts", notes = "Returns accounts")
-    @RequestMapping(method = RequestMethod.GET)
+    @RequestMapping(method = RequestMethod.GET, produces = {MediaType.APPLICATION_JSON_VALUE})
     public List<Account> getAccounts() {
         return accountRepository.findAll();
     }
 
     @ApiOperation(value = "Get account", notes = "Returns an account by id")
-    @RequestMapping(value = "/{accountId}", method = RequestMethod.GET, produces = {MediaType.APPLICATION_JSON_VALUE})
+    @RequestMapping(value = "/{accountId}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Resource<Account>> getAccount(@PathVariable String accountId) throws AccountDoesNotExistException {
         final Account account = accountRepository.findOne(accountId);
         if (account == null) {
@@ -43,7 +45,20 @@ public class AccountController {
         return new ResponseEntity<>(resource, HttpStatus.OK);
     }
 
+    // TODO check why swagger has problems with using PUT
+    @ApiOperation(value = "Update an account", notes = "Update an account")
+    @RequestMapping(value = "/{accountId}", method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Resource<Account>> updateAccount(@PathVariable String accountId, @RequestBody Account account) throws AccountDoesNotExistException {
+        final Account existingAccount = accountRepository.findOne(accountId);
+        if (existingAccount == null) {
+            throw new AccountDoesNotExistException(accountId);
+        }
+        copyFields(existingAccount, account);
+        accountRepository.save(existingAccount);
 
+        Resource<Account> resource = accountResourceAssembler.toResource(existingAccount);
+        return new ResponseEntity<>(resource, HttpStatus.OK);
+    }
 
     @ApiOperation(value = "Get goals", notes = "Get goals of an account")
     @RequestMapping(value = "/{accountId}/goals", method = RequestMethod.GET)
@@ -54,7 +69,6 @@ public class AccountController {
         }
         return new ResponseEntity<>(account.getGoals(), HttpStatus.OK);
     }
-
 
 
 //    @ApiOperation(value = "Get goal", notes = "Get a goal of an account")
@@ -81,5 +95,10 @@ public class AccountController {
         return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
     }
 
+    public void copyFields(Account existingAccount, Account account) {
+        if (account.getName() != null) {
+            existingAccount.setName(account.getName());
+        }
+    }
 
 }
