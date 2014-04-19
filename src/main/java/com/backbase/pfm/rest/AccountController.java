@@ -46,6 +46,7 @@ public class AccountController {
     }
 
     // TODO check why swagger has problems with using PATCH
+    // ISSUE: https://github.com/martypitt/swagger-springmvc/issues/249
     @ApiOperation(value = "Update an account", notes = "Update an account")
     @RequestMapping(value = "/{accountId}", method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Resource<Account>> updateAccount(@PathVariable String accountId, @RequestBody Account account) throws AccountDoesNotExistException {
