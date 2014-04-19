@@ -1,5 +1,6 @@
-package com.backbase.pfm;
+package com.backbase.pfm.docs;
 
+import com.backbase.pfm.docs.ApiPathProvider;
 import com.mangofactory.swagger.configuration.JacksonScalaSupport;
 import com.mangofactory.swagger.configuration.SpringSwaggerConfig;
 import com.mangofactory.swagger.configuration.SpringSwaggerModelConfig;

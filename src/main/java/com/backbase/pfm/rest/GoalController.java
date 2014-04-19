@@ -1,4 +1,4 @@
-package com.backbase.pfm;
+package com.backbase.pfm.rest;
 
 import com.fasterxml.jackson.core.JsonParseException;
 import org.springframework.beans.TypeMismatchException;

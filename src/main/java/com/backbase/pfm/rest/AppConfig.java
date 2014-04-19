@@ -1,5 +1,6 @@
-package com.backbase.pfm;
+package com.backbase.pfm.rest;
 
+import com.backbase.pfm.rest.DataLoader;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;

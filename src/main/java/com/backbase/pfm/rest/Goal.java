@@ -1,4 +1,4 @@
-package com.backbase.pfm;
+package com.backbase.pfm.rest;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.hibernate.validator.constraints.NotEmpty;
