@@ -13,7 +13,7 @@ import java.lang.*;
 import java.util.List;
 
 @RestController
-@Api(value = "pfm", description = "PFM API")
+@Api(value = "Accounts", description = "PFM API")
 @RequestMapping("/v1/pfm/accounts")
 public class PFMController {
 
