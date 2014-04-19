@@ -13,7 +13,7 @@ import java.util.List;
 @Entity
 @Table(name = "accounts")
 @JsonIgnoreProperties("new")
-public class Account extends AbstractPersistable<Long> {
+public class Account extends AbstractPersistable<String> {
 
     private String name;
     private AccountType type;

@@ -15,13 +15,13 @@ import java.util.List;
 @RestController
 @Api(value = "Accounts", description = "PFM API")
 @RequestMapping("/v1/pfm/accounts")
-public class PFMController {
+public class AccountController {
 
     private AccountRepository accountRepository;
     private AccountResourceAssembler accountResourceAssembler;
 
     @Autowired
-    public PFMController(AccountRepository accountRepository, AccountResourceAssembler accountResourceAssembler) {
+    public AccountController(AccountRepository accountRepository, AccountResourceAssembler accountResourceAssembler) {
         this.accountRepository = accountRepository;
         this.accountResourceAssembler = accountResourceAssembler;
     }
@@ -34,7 +34,7 @@ public class PFMController {
 
     @ApiOperation(value = "Get account", notes = "Returns an account by id")
     @RequestMapping(value = "/{accountId}", method = RequestMethod.GET, produces = {MediaType.APPLICATION_JSON_VALUE})
-    public ResponseEntity<Resource<Account>> getAccount(@PathVariable Long accountId) throws AccountDoesNotExistException {
+    public ResponseEntity<Resource<Account>> getAccount(@PathVariable String accountId) throws AccountDoesNotExistException {
         final Account account = accountRepository.findOne(accountId);
         if (account == null) {
             throw new AccountDoesNotExistException(accountId);
@@ -43,9 +43,11 @@ public class PFMController {
         return new ResponseEntity<>(resource, HttpStatus.OK);
     }
 
+
+
     @ApiOperation(value = "Get goals", notes = "Get goals of an account")
     @RequestMapping(value = "/{accountId}/goals", method = RequestMethod.GET)
-    public ResponseEntity<List<Goal>> getAccountGoals(@PathVariable Long accountId) throws AccountDoesNotExistException {
+    public ResponseEntity<List<Goal>> getAccountGoals(@PathVariable String accountId) throws AccountDoesNotExistException {
         final Account account = accountRepository.findOne(accountId);
         if (account == null) {
             throw new AccountDoesNotExistException(accountId);
@@ -53,20 +55,22 @@ public class PFMController {
         return new ResponseEntity<>(account.getGoals(), HttpStatus.OK);
     }
 
-    @ApiOperation(value = "Get goal", notes = "Get a goal of an account")
-    @RequestMapping(value = "/{accountId}/goals/{goalId}", method = RequestMethod.GET)
-    public ResponseEntity<Goal> getAccountGoal(@PathVariable Long accountId, @PathVariable Long goalId)
-            throws AccountDoesNotExistException, GoalDoesNotExistException {
-        final Account account = accountRepository.findOne(accountId);
-        if (account == null) {
-            throw new AccountDoesNotExistException(accountId);
-        }
-        Goal goal = account.getGoal(goalId);
-        if (goal == null) {
-            throw new GoalDoesNotExistException(accountId, goalId);
-        }
-        return new ResponseEntity<>(goal, HttpStatus.OK);
-    }
+
+
+//    @ApiOperation(value = "Get goal", notes = "Get a goal of an account")
+//    @RequestMapping(value = "/{accountId}/goals/{goalId}", method = RequestMethod.GET)
+//    public ResponseEntity<Goal> getAccountGoal(@PathVariable Long accountId, @PathVariable Long goalId)
+//            throws AccountDoesNotExistException, GoalDoesNotExistException {
+//        final Account account = accountRepository.findOne(accountId);
+//        if (account == null) {
+//            throw new AccountDoesNotExistException(accountId);
+//        }
+//        Goal goal = account.getGoal(goalId);
+//        if (goal == null) {
+//            throw new GoalDoesNotExistException(accountId, goalId);
+//        }
+//        return new ResponseEntity<>(goal, HttpStatus.OK);
+//    }
 
 
     @ExceptionHandler({AccountDoesNotExistException.class, GoalDoesNotExistException.class})

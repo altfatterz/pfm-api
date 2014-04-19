@@ -12,7 +12,7 @@ final class AccountResourceAssembler implements ResourceAssembler<Account, Resou
     @Override
     public Resource<Account> toResource(Account account) {
         Resource<Account> resource = new Resource<>(account);
-        resource.add(linkTo(PFMController.class).slash(account.getId()).slash("goals").withRel("goals"));
+        resource.add(linkTo(AccountController.class).slash(account.getId()).slash("goals").withRel("goals"));
         return resource;
     }
 }
