@@ -33,7 +33,7 @@ public class PFMController {
     }
 
     @ApiOperation(value = "Get account", notes = "Returns an account by id")
-    @RequestMapping(value = "/{accountId}", method = RequestMethod.GET)
+    @RequestMapping(value = "/{accountId}", method = RequestMethod.GET, produces = {MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity<Resource<Account>> getAccount(@PathVariable Long accountId) throws AccountDoesNotExistException {
         final Account account = accountRepository.findOne(accountId);
         if (account == null) {
