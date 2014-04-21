@@ -1,6 +1,7 @@
 package com.backbase.pfm.rest;
 
 import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import com.wordnik.swagger.annotations.Api;
 import com.wordnik.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -163,6 +164,8 @@ public class AccountController {
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }
 
+    //TODO: com.fasterxml.jackson.databind.exc.InvalidFormatException: Can not construct instance of java.math.BigDecimal from String value 'BigDecimal': not a valid representation
+
     @ExceptionHandler({AccountDoesNotExistException.class, GoalDoesNotExistException.class})
     public ResponseEntity<ErrorResponse> handleNotFounds(Exception e) {
         ErrorResponse errorResponse = new ErrorResponse();
@@ -180,6 +183,7 @@ public class AccountController {
             if (cause instanceof JsonParseException) {
                 errorResponse.setMessage("invalid JSON payload");
             }
+            System.out.println(cause);
         } else {
             errorResponse.setMessage("bad request");
         }
