@@ -10,6 +10,9 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -76,7 +79,6 @@ public class AccountController {
         return new ResponseEntity<>(account.getGoals(), HttpStatus.OK);
     }
 
-
     @ApiOperation(value = "Get goal", notes = "Get a goal of an account")
     @RequestMapping(value = "/{accountId}/goals/{goalId}", method = RequestMethod.GET)
     public ResponseEntity<Goal> getAccountGoal(@PathVariable String accountId, @PathVariable String goalId)
@@ -92,7 +94,7 @@ public class AccountController {
         return new ResponseEntity<>(goal, HttpStatus.OK);
     }
 
-    @ApiOperation(value = "Create a goal", notes = "Create a goal to an account")
+    @ApiOperation(value = "Create goal", notes = "Create a goal to an account")
     @RequestMapping(value = "/{accountId}/goals", method = RequestMethod.POST)
     public ResponseEntity<Void> createGoal(@PathVariable String accountId, @Valid @RequestBody Goal goal)
             throws AccountDoesNotExistException {
@@ -107,6 +109,7 @@ public class AccountController {
         return new ResponseEntity<>(headers, HttpStatus.CREATED);
     }
 
+    @ApiOperation(value = "Delete goal", notes = "Create a goal to an account")
     @RequestMapping(value = "/{accountId}/goals/{goalId}", method = RequestMethod.DELETE)
     public ResponseEntity<Void> deleteGoal(@PathVariable String accountId, @PathVariable String goalId) throws GoalNotFoundException {
         try {
@@ -115,6 +118,49 @@ public class AccountController {
             throw new GoalNotFoundException(goalId);
         }
         return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @ApiOperation(value = "Update goal", notes = "Replace a goal with another one")
+    @RequestMapping(value = "/{accountId}/goals/{goalId}", method = RequestMethod.PUT)
+    public ResponseEntity<Goal> updateGoal(@PathVariable String accountId,
+                                           @PathVariable String goalId,
+                                           @RequestBody @Valid Goal updatedGoal)
+            throws GoalNotFoundException, GoalDoesNotExistException, AccountDoesNotExistException {
+
+        Account account = accountRepository.findOne(accountId);
+        if (account == null) {
+            throw new AccountDoesNotExistException(accountId);
+        }
+        Goal goal = account.getGoal(goalId);
+        if (goal == null) {
+            throw new GoalDoesNotExistException(accountId, goalId);
+        }
+        goal.setName(updatedGoal.getName());
+        goal.setAmount(updatedGoal.getAmount());
+        goalRepository.save(goal);
+
+        return new ResponseEntity<>(goal, HttpStatus.OK);
+
+    }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<ErrorResponse> handleError(MethodArgumentNotValidException e) {
+        ErrorResponse errorResponse = new ErrorResponse();
+        errorResponse.setCode(HttpStatus.BAD_REQUEST.toString());
+        BindingResult bindingResult = e.getBindingResult();
+        if (bindingResult != null) {
+            FieldError fieldError = bindingResult.getFieldError();
+            if (fieldError != null) {
+                StringBuilder sb = new StringBuilder();
+                sb.append(fieldError.getField());
+                sb.append(" field [");
+                sb.append(fieldError.getRejectedValue());
+                sb.append("] value is rejected, ");
+                sb.append(fieldError.getDefaultMessage());
+                errorResponse.setMessage(sb.toString());
+            }
+        }
+        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler({AccountDoesNotExistException.class, GoalDoesNotExistException.class})
