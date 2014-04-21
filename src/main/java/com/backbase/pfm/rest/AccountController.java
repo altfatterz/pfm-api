@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.wordnik.swagger.annotations.Api;
 import com.wordnik.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.hateoas.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -106,6 +107,15 @@ public class AccountController {
         return new ResponseEntity<>(headers, HttpStatus.CREATED);
     }
 
+    @RequestMapping(value = "/{accountId}/goals/{goalId}", method = RequestMethod.DELETE)
+    public ResponseEntity<Void> deleteGoal(@PathVariable String accountId, @PathVariable String goalId) throws GoalNotFoundException {
+        try {
+            goalRepository.delete(goalId);
+        } catch (EmptyResultDataAccessException e) {
+            throw new GoalNotFoundException(goalId);
+        }
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
 
     @ExceptionHandler({AccountDoesNotExistException.class, GoalDoesNotExistException.class})
     public ResponseEntity<ErrorResponse> handleNotFounds(Exception e) {
@@ -113,6 +123,21 @@ public class AccountController {
         errorResponse.setCode(HttpStatus.NOT_FOUND.toString());
         errorResponse.setMessage(e.getMessage());
         return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<ErrorResponse> handleTypeMismatchException(Exception e) {
+        ErrorResponse errorResponse = new ErrorResponse();
+        errorResponse.setCode(HttpStatus.BAD_REQUEST.toString());
+        Throwable cause = e.getCause();
+        if (cause != null) {
+            if (cause instanceof JsonParseException) {
+                errorResponse.setMessage("invalid JSON payload");
+            }
+        } else {
+            errorResponse.setMessage("bad request");
+        }
+        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }
 
     public void copyFields(Account existingAccount, Account account) {
