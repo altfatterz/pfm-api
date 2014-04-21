@@ -20,33 +20,36 @@ public class DataLoader {
         account.setName("Family savings account");
         account.setType(AccountType.SAVINGS);
         account.setBalance(new BigDecimal(20000));
+        accountRepository.save(account);
 
         Goal goal = new Goal();
         goal.setName("Vacation");
-        account.addGoal(goal);
+        goal.setAccount(account);
+        goalRepository.save(goal);
 
         goal = new Goal();
         goal.setName("New house");
-        account.addGoal(goal);
+        goal.setAccount(account);
+        goalRepository.save(goal);
 
-        accountRepository.save(account);
 
         account = new Account();
         account.setName("Checking account");
         account.setType(AccountType.CHECKING);
         account.setBalance(new BigDecimal(3000));
+        accountRepository.save(account);
 
         goal = new Goal();
         goal.setName("Groceries");
         goal.setAmount(new BigDecimal(150));
-        account.addGoal(goal);
+        goal.setAccount(account);
+        goalRepository.save(goal);
 
         goal = new Goal();
         goal.setName("Monthly Bills");
         goal.setAmount(new BigDecimal(550));
-        account.addGoal(goal);
-
-        accountRepository.save(account);
+        goal.setAccount(account);
+        goalRepository.save(goal);
 
     }
 

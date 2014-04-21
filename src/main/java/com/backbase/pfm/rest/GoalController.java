@@ -34,7 +34,7 @@ public class GoalController {
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
-    public ResponseEntity<Goal> getGoal(@PathVariable Long id) throws GoalNotFoundException {
+    public ResponseEntity<Goal> getGoal(@PathVariable String id) throws GoalNotFoundException {
         Goal goal = goalRepository.findOne(id);
         if (goal == null) {
             throw new GoalNotFoundException(id);
@@ -112,7 +112,7 @@ public class GoalController {
 
     // curl -H "Content-Type:application/json" -X PUT localhost:8080/v1/pfm/goals/4 -d '{"name":"Vacation","amount":500}'
     @RequestMapping(value = "/{id}", method = RequestMethod.PUT)
-    public ResponseEntity<Void> updateGoal(@PathVariable Long id, @RequestBody Goal goal) throws GoalNotFoundException {
+    public ResponseEntity<Void> updateGoal(@PathVariable String id, @RequestBody Goal goal) throws GoalNotFoundException {
         Goal goalToUpdate = goalRepository.findOne(id);
         if (goalToUpdate == null) {
             throw new GoalNotFoundException(id);
@@ -147,7 +147,7 @@ public class GoalController {
     // curl -i -v -X DELETE localhost:8080/v1/pfm/goals/5  -> error
     // curl -i -v -X DELETE localhost:8080/v1/pfm/goals/1  -> 200 OK
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
-    public ResponseEntity<Void> deleteGoal(@PathVariable Long id) throws GoalNotFoundException {
+    public ResponseEntity<Void> deleteGoal(@PathVariable String id) throws GoalNotFoundException {
         try {
             goalRepository.delete(id);
         } catch (EmptyResultDataAccessException e) {

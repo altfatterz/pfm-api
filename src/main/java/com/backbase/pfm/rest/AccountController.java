@@ -5,6 +5,7 @@ import com.wordnik.swagger.annotations.Api;
 import com.wordnik.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.Resource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.lang.*;
+import java.net.URI;
 import java.util.List;
 
 @RestController
@@ -21,11 +23,13 @@ public class AccountController {
 
     private AccountRepository accountRepository;
     private AccountResourceAssembler accountResourceAssembler;
+    private GoalRepository goalRepository;
 
     @Autowired
-    public AccountController(AccountRepository accountRepository, AccountResourceAssembler accountResourceAssembler) {
+    public AccountController(AccountRepository accountRepository, AccountResourceAssembler accountResourceAssembler, GoalRepository goalRepository) {
         this.accountRepository = accountRepository;
         this.accountResourceAssembler = accountResourceAssembler;
+        this.goalRepository = goalRepository;
     }
 
     @ApiOperation(value = "Get accounts", notes = "Returns accounts")
@@ -85,6 +89,21 @@ public class AccountController {
             throw new GoalDoesNotExistException(accountId, goalId);
         }
         return new ResponseEntity<>(goal, HttpStatus.OK);
+    }
+
+    @ApiOperation(value = "Create a goal", notes = "Create a goal to an account")
+    @RequestMapping(value = "/{accountId}/goals", method = RequestMethod.POST)
+    public ResponseEntity<Void> createGoal(@PathVariable String accountId, @Valid @RequestBody Goal goal)
+            throws AccountDoesNotExistException {
+        Account account = accountRepository.findOne(accountId);
+        if (account == null) {
+            throw new AccountDoesNotExistException(accountId);
+        }
+        goal.setAccount(account);
+        Goal savedGoal = goalRepository.save(goal);
+        HttpHeaders headers = new HttpHeaders();
+        headers.setLocation(URI.create("http://localhost:8080/v1/pfm/accounts/" + accountId + "/goals/" + savedGoal.getId()));
+        return new ResponseEntity<>(headers, HttpStatus.CREATED);
     }
 
 

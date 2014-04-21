@@ -20,8 +20,7 @@ public class Account extends AbstractPersistable<String> {
     private BigDecimal balance;
     private BigDecimal safeToSpend;
 
-    @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "goal_id")
+    @OneToMany(mappedBy = "account", cascade = CascadeType.ALL)
     private List<Goal> goals = Collections.emptyList();
 
     public void addGoal(Goal goal) {
