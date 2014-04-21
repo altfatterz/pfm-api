@@ -2,9 +2,9 @@ package com.backbase.pfm.rest;
 
 public class GoalDoesNotExistException extends Exception {
 
-    private static final String MESSAGE_FORMAT = "Goal '%d' for account '%d' does not exist";
+    private static final String MESSAGE_FORMAT = "Goal '%s' for account '%s' does not exist";
 
-    public GoalDoesNotExistException(Long accountId, Long goalId) {
+    public GoalDoesNotExistException(String accountId, String goalId) {
         super(String.format(MESSAGE_FORMAT, goalId, accountId));
     }
 

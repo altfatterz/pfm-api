@@ -32,9 +32,9 @@ public class Account extends AbstractPersistable<String> {
         calcSafeToSpend();
     }
 
-    public Goal getGoal(Long id) {
+    public Goal getGoal(String id) {
         for (Goal goal : goals) {
-            if (goal.getId() == id) {
+            if (goal.getId().equals(id)) {
                 return goal;
             }
         }

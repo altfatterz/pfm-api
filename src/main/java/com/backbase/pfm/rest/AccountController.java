@@ -72,20 +72,20 @@ public class AccountController {
     }
 
 
-//    @ApiOperation(value = "Get goal", notes = "Get a goal of an account")
-//    @RequestMapping(value = "/{accountId}/goals/{goalId}", method = RequestMethod.GET)
-//    public ResponseEntity<Goal> getAccountGoal(@PathVariable Long accountId, @PathVariable Long goalId)
-//            throws AccountDoesNotExistException, GoalDoesNotExistException {
-//        final Account account = accountRepository.findOne(accountId);
-//        if (account == null) {
-//            throw new AccountDoesNotExistException(accountId);
-//        }
-//        Goal goal = account.getGoal(goalId);
-//        if (goal == null) {
-//            throw new GoalDoesNotExistException(accountId, goalId);
-//        }
-//        return new ResponseEntity<>(goal, HttpStatus.OK);
-//    }
+    @ApiOperation(value = "Get goal", notes = "Get a goal of an account")
+    @RequestMapping(value = "/{accountId}/goals/{goalId}", method = RequestMethod.GET)
+    public ResponseEntity<Goal> getAccountGoal(@PathVariable String accountId, @PathVariable String goalId)
+            throws AccountDoesNotExistException, GoalDoesNotExistException {
+        final Account account = accountRepository.findOne(accountId);
+        if (account == null) {
+            throw new AccountDoesNotExistException(accountId);
+        }
+        Goal goal = account.getGoal(goalId);
+        if (goal == null) {
+            throw new GoalDoesNotExistException(accountId, goalId);
+        }
+        return new ResponseEntity<>(goal, HttpStatus.OK);
+    }
 
 
     @ExceptionHandler({AccountDoesNotExistException.class, GoalDoesNotExistException.class})
